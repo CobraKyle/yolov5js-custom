@@ -60,13 +60,13 @@ export class YOLOv5 {
     ): [tf.Tensor4D, [number, number]] {
         const inputTensor = tf.browser.fromPixels(image);
         const inputResolution: [number, number] = [image.height, image.width];
-        const smalImg = tf.image.resizeBilinear(inputTensor, inferenceResolution);
-        const resized = tf.cast(smalImg, 'float32');
-        const preprocessedTensor = tf.tensor4d(Array.from(resized.dataSync()),[1,3,inputResolution[0], inputResolution[1]])
-        // const preprocessedTensor: tf.Tensor4D = tf.image
-        //     .resizeBilinear(inputTensor, inferenceResolution)
-        //     .div(255.0)
-        //     .expandDims(0);
+        // const smalImg = tf.image.resizeBilinear(inputTensor, inferenceResolution);
+        // const resized = tf.cast(smalImg, 'float32');
+        // const preprocessedTensor = tf.tensor4d(Array.from(resized.dataSync()),[1,3,inputResolution[0], inputResolution[1]])
+        const preprocessedTensor: tf.Tensor4D = tf.image
+            .resizeBilinear(inputTensor, inferenceResolution)
+            .div(255.0)
+            .expandDims(0);
         
         // tf.reshape(preprocessedTensor, [1, 3, inferenceResolution[0], inferenceResolution[1]])
         console.log('from main1',preprocessedTensor)
@@ -115,7 +115,7 @@ export class YOLOv5 {
     }
 
     public async detect(image: HTMLImageElement | HTMLCanvasElement | ImageData, minScore?: number): Promise<DetectedObject[]> {
-        const [ preprocessedTensor, inputResolution] = tf.tidy(() => {
+        const [preprocessedTensor, inputResolution] = tf.tidy(() => {
             return YOLOv5.preprocessImage(image, this.inferenceResolution);
         });
         const finalTensor = tf.reshape(preprocessedTensor, [1,3,inputResolution[0], inputResolution[1]])
