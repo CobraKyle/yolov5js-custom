@@ -55,15 +55,19 @@ export class YOLOv5 {
     }
 
     public static preprocessImage(
-        image: HTMLImageElement | HTMLCanvasElement,
+        image: HTMLImageElement | HTMLCanvasElement | ImageData,
         inferenceResolution: [number, number]
     ): [tf.Tensor4D, [number, number]] {
         const inputTensor = tf.browser.fromPixels(image);
         const inputResolution: [number, number] = [image.height, image.width];
+        // const smalImg = tf.image.resizeBilinear(inputTensor, inferenceResolution);
+        // const resized = tf.cast(smalImg, 'float32');
         const preprocessedTensor: tf.Tensor4D = tf.image
             .resizeBilinear(inputTensor, inferenceResolution)
             .div(255.0)
             .expandDims(0);
+        tf.reshape(preprocessedTensor, [1, 3, inputResolution[0], inputResolution[1]])
+        console.log('from main',preprocessedTensor)
         return [preprocessedTensor, inputResolution];
     }
 
@@ -112,6 +116,8 @@ export class YOLOv5 {
         const [preprocessedTensor, inputResolution] = tf.tidy(() => {
             return YOLOv5.preprocessImage(image, this.inferenceResolution);
         });
+         // preprocessedTensor = tf.reshape(preprocessedTensor, [1,3,inputResolution[0], inputResolution[1]])
+        //  console.log('from main',preprocessedTensor)
         const result = await this.model.executeAsync(preprocessedTensor) as tf.Tensor[];
         const boxes = result[0].dataSync() as Float32Array;
         const scores = result[1].dataSync() as Float32Array;
