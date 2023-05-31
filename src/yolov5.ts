@@ -69,7 +69,7 @@ export class YOLOv5 {
             // .cast(inputTensor, 'float32');
             .expandDims(0);
         
-        tf.reshape(preprocessedTensor, [1, 3, inferenceResolution[0], inferenceResolution[1]])
+        // tf.reshape(preprocessedTensor, [1, 3, inferenceResolution[0], inferenceResolution[1]])
         console.log('from main1', preprocessedTensor)
         return [preprocessedTensor, inputResolution];
     }
@@ -119,15 +119,15 @@ export class YOLOv5 {
         const [preprocessedTensor, inputResolution] = tf.tidy(() => {
             return YOLOv5.preprocessImage(image, this.inferenceResolution);
         });
-        const finalTensor = tf.reshape(preprocessedTensor, [1,3,inputResolution[0], inputResolution[1]])
+        // const finalTensor = tf.reshape(preprocessedTensor, [1,3,inputResolution[0], inputResolution[1]])
         // preprocessedTensor = tf.reshape(preprocessedTensor, [1,3,inputResolution[0], inputResolution[1]])
-        console.log('from main',finalTensor)
-        const result = await this.model.executeAsync(finalTensor) as tf.Tensor[];
+        console.log('from main',preprocessedTensor)
+        const result = await this.model.executeAsync(preprocessedTensor) as tf.Tensor[];
         const boxes = result[0].dataSync() as Float32Array;
         const scores = result[1].dataSync() as Float32Array;
         const classes = result[2].dataSync() as Float32Array;
 
-        finalTensor.dispose();
+        preprocessedTensor.dispose();
         tf.dispose(result);
 
         return YOLOv5.postprocessResults(boxes, scores, classes, inputResolution, this.classNames, minScore);
