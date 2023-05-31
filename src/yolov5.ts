@@ -66,7 +66,7 @@ export class YOLOv5 {
             .resizeBilinear(inputTensor, inferenceResolution)
             .div(255.0)
             .expandDims(0);
-        tf.reshape(preprocessedTensor, [1, 3, inputResolution[0], inputResolution[1]])
+        tf.reshape(preprocessedTensor, [1, 3, inferenceResolution[0], inferenceResolution[1]])
         console.log('from main',preprocessedTensor)
         return [preprocessedTensor, inputResolution];
     }
