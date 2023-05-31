@@ -66,10 +66,11 @@ export class YOLOv5 {
         const preprocessedTensor: tf.Tensor4D = tf.image
             .resizeBilinear(inputTensor, inferenceResolution)
             .div(255.0)
+            // .cast(inputTensor, 'float32');
             .expandDims(0);
         
-        // tf.reshape(preprocessedTensor, [1, 3, inferenceResolution[0], inferenceResolution[1]])
-        console.log('from main1',preprocessedTensor)
+        tf.reshape(preprocessedTensor, [1, 3, inferenceResolution[0], inferenceResolution[1]])
+        console.log('from main1', preprocessedTensor)
         return [preprocessedTensor, inputResolution];
     }
 
