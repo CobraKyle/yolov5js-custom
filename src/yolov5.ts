@@ -60,7 +60,7 @@ export class YOLOv5 {
     ): [tf.Tensor4D, [number, number]] {
         const inputTensor = tf.browser.fromPixels(image);
         const inputResolution: [number, number] = [image.height, image.width];
-        const smalImg = tf.image.resizeBilinear(inputTensor, [416, 416]);
+        const smalImg = tf.image.resizeBilinear(inputTensor, inferenceResolution);
         const resized = tf.cast(smalImg, 'float32');
         const preprocessedTensor = tf.tensor4d(Array.from(resized.dataSync()),[1,3,416,416])
         // const preprocessedTensor: tf.Tensor4D = tf.image
