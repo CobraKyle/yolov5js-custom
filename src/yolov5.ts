@@ -62,7 +62,7 @@ export class YOLOv5 {
         const inputResolution: [number, number] = [image.height, image.width];
         const smalImg = tf.image.resizeBilinear(inputTensor, inferenceResolution);
         const resized = tf.cast(smalImg, 'float32');
-        const preprocessedTensor = tf.tensor4d(Array.from(resized.dataSync()),[1,3,416,416])
+        const preprocessedTensor = tf.tensor4d(Array.from(resized.dataSync()),[1,3,inputResolution[0], inputResolution[1]])
         // const preprocessedTensor: tf.Tensor4D = tf.image
         //     .resizeBilinear(inputTensor, inferenceResolution)
         //     .div(255.0)
